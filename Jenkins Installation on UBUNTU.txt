@@ -1,0 +1,130 @@
+Link: https://www.jenkins.io/doc/book/installing/linux/
+
+Step:1 Update the System:
+---------------------------------------
+> sudo apt update
+> sudo apt upgrade -y
+
+Step:2 install java
+---------------------------------------
+> sudo apt install openjdk-17-jdk -y
+
+Step:3 check the java-version
+---------------------------------------
+> java --version
+
+Step:4 Jenkins Installation
+---------------------------------------
+>sudo wget -O /usr/share/keyrings/jenkins-keyring.asc \
+  https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key
+
+> echo "deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc]" \
+  https://pkg.jenkins.io/debian-stable binary/ | sudo tee \
+  /etc/apt/sources.list.d/jenkins.list > /dev/null
+
+> sudo apt-get update
+
+> sudo apt-get install jenkins
+
+Step:5 Start Jenkins Service
+--------------------------------------
+a. enable Jenkins 
+> sudo systemctl enable jenkins
+
+b. start the Jenkins service
+> sudo systemctl start jenkins
+
+c. get the status of Jenkins
+> sudo systemctl status jenkins
+
+d.stop Jenkins service
+> sudo systemctl stop jenkins
+
+
+
+Step:6 Get Secret InitialAdminPassword
+----------------------------------------
+> sudo cat /var/lib/Jenkins/secrets/initialAdminPassword
+
+
+
+***********************************************************************************************************************************************************************
+Creating Jenkins Freestyle Project
+***********************************************************************************************************************************************************************
+> goto>dashboard>create new job
+> select freestyle project>give description>
+> goto> source code management
+
+	GIT: select
+	URL:add your repository url
+	Branches to Build: *master /main
+	POLL SCM:
+		H/2 * * * *
+> click on apply and save
+> Build Project
+
+
+> now goto your repository and make some changes and check the Jenkins dashboard. it will automatically build the project again
+
+
+
+here H/2 means---> H is representing some Hash, 2 represents 2 minutes
+		*---> Hours
+		*---> Day
+		*---> Month
+		*---> Every Day of Week
+
+
+INTEGRATE PLUGINS:
+
+> goto> amange jenkins> plugins> available plugins> install maven integration
+
+Create Simple Pipeline Project and below pipline:
+
+pipeline {
+    agent any
+
+    stages {
+        stage('build') {
+            steps {
+                echo 'This is Building stage'
+            }
+        }
+        stage('App Start') {
+            steps {
+                echo 'This is Application Starting Stage'
+            }
+        }
+        stage('App Testing') {
+            steps {
+                echo 'This is App testing stage'
+            }
+        }
+        stage('App Stop') {
+            steps {
+                echo 'This is end of all stages'
+            }
+        }
+    }
+}
+
+WAP to create Simple Stagged Pipline Script using Jenkins with executing shell commands
+
+
+pipeline {
+    agent any
+
+    stages {
+        stage('preparation') {
+            steps {
+                echo 'This is Preparation stage'
+                sh ''' 
+			echo "cleaning previous files...."
+			rm -f output/
+			mkdir output
+		''''
+            }
+        }
+     }
+}
+
